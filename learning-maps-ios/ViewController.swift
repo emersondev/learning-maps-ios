@@ -20,12 +20,23 @@ class ViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        /* set location */
+        
         let areaVisualization: MKCoordinateSpan = MKCoordinateSpan.init(latitudeDelta: deltaLatitude, longitudeDelta: deltaLongitude)
         let location: CLLocationCoordinate2D = CLLocationCoordinate2DMake(latitudeValue, longitudeValue)
         
         let localRegion: MKCoordinateRegion = MKCoordinateRegion.init(center: location, span: areaVisualization)
         
         mapReference.setRegion(localRegion, animated: true)
+        
+        /* set pin location */
+        let anotation = MKPointAnnotation()
+        
+        anotation.coordinate = location
+        anotation.title = "Parque Santa Maria"
+        anotation.subtitle = "Bom pra andar de patins"
+        
+        mapReference.addAnnotation(anotation)
     }
 
 
