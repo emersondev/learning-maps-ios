@@ -8,19 +8,30 @@
 import UIKit
 import MapKit
 
-class ViewController: UIViewController, MKMapViewDelegate {
+class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
 
     @IBOutlet weak var mapReference: MKMapView!
-    
-    let latitudeValue: CLLocationDegrees = -22.69896843334008
-    let longitudeValue: CLLocationDegrees = -46.987800181880765
+    var managerLocal = CLLocationManager()
+    var latitudeValue: CLLocationDegrees = 0.0
+    var longitudeValue: CLLocationDegrees = 0.0
     let deltaLatitude: CLLocationDegrees = 0.001
     let deltaLongitude: CLLocationDegrees = 0.001
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        /* set location */
+        managerLocal.delegate = self
+        managerLocal.desiredAccuracy = kCLLocationAccuracyBest
+        managerLocal.requestWhenInUseAuthorization()
+        managerLocal.startUpdatingLocation()
+
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let locationUser: CLLocation = locations.last!
+        
+        latitudeValue = locationUser.coordinate.latitude
+        longitudeValue = locationUser.coordinate.longitude
         
         let areaVisualization: MKCoordinateSpan = MKCoordinateSpan.init(latitudeDelta: deltaLatitude, longitudeDelta: deltaLongitude)
         let location: CLLocationCoordinate2D = CLLocationCoordinate2DMake(latitudeValue, longitudeValue)
@@ -28,15 +39,6 @@ class ViewController: UIViewController, MKMapViewDelegate {
         let localRegion: MKCoordinateRegion = MKCoordinateRegion.init(center: location, span: areaVisualization)
         
         mapReference.setRegion(localRegion, animated: true)
-        
-        /* set pin location */
-        let anotation = MKPointAnnotation()
-        
-        anotation.coordinate = location
-        anotation.title = "Parque Santa Maria"
-        anotation.subtitle = "Bom pra andar de patins"
-        
-        mapReference.addAnnotation(anotation)
     }
 
 
